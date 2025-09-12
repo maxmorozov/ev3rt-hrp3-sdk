@@ -141,6 +141,7 @@ ev3_sdcard_readdir(ID dirid, fileinfo_t *fileinfo) {
 	fileinfo->is_hidden = nfo.fattrib & TA_FILE_HID;
 	fileinfo->is_readonly = nfo.fattrib & TA_FILE_RDO;
 	strncpy(fileinfo->name, nfo.fname, TMAX_FILENAME_LEN);
+	fileinfo->name[TMAX_FILENAME_LEN] = '\0';
 	fileinfo->size = nfo.fsize;
 	fileinfo->time = nfo.ftime;
 
