@@ -40,7 +40,7 @@ main_task(intptr_t exinf)
 {
 	int speed; /* 走行速度 */
 	int steer; /* ステアリング角度 */
-	int light; /* 光センサの取得値を保存 */
+	int light = 0; /* 光センサの取得値を保存 */
 	enum State state; /* 状態変数*/
 
 	initialization(); /* NXTrikeの初期化処理 !!! 必ず呼ぶこと!!! */
