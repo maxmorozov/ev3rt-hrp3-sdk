@@ -48,17 +48,17 @@ define print_cmd
 endef
 
 #
-#  ターゲットの指定（Makefile.targetで上書きされるのを防ぐため）
+#  Specifying a target (to prevent it from being overridden by Makefile.target)
 #
 all:
 
 #
-#  ターゲット略称の定義
+#  Target abbreviation definition
 #
 TARGET = @(TARGET)
 
 #
-#  プログラミング言語の定義
+#  Definition of a programming language
 #
 SRCLANG = @(SRCLANG)
 ifeq ($(SRCLANG),c)
@@ -71,54 +71,54 @@ ifeq ($(SRCLANG),c++)
 endif
 
 #
-#  ソースファイルのディレクトリの定義
+#  Define the directory for the source files
 #
 SRCDIR = @(SRCDIR)
 
 #
-#  オブジェクトファイル名の拡張子の設定
+#  Set object filename extension
 #
 OBJEXT = @(OBJEXT)
 
 #
-#  カーネルライブラリ（libkernel.a）のディレクトリ名
-#  （カーネルライブラリもmake対象にする時は，空に定義する）
+#  Directory name of the kernel library (libkernel.a)
+#  (If you also want to make the kernel library, define it as empty.)
 #
 KERNEL_LIB = @(KERNEL_LIB)
 
 #
-#  カーネルを関数単位でコンパイルするかどうかの定義
+#  Defines whether to compile the kernel function by function
 #
 KERNEL_FUNCOBJS = @(KERNEL_FUNCOBJS)
 
 #
-#  TECSを外すかどうかの定義
+#  Definition of whether to remove TECS
 #
 OMIT_TECS = @(OMIT_TECS)
 
 #
-#  TECS関係ファイルのディレクトリの定義
+#  Directory definition for TECS related files
 #
 TECSDIR = @(TECSDIR)
 
 #
-#  トレースログを取得するかどうかの定義
+#  Define whether to acquire trace logs
 #
 ENABLE_TRACE = @(ENABLE_TRACE)
 
 #
-#  開発ツール（コンパイラ等）のディレクトリの定義
+#  Define the directory for development tools (compilers, etc.)
 #
 DEVTOOLDIR = @(DEVTOOLDIR)
 
 #
-#  ユーティリティプログラムの名称
+#  Utility program name
 #
 CFG = @(CFG)
 TECSGEN = @(TECSGEN)
 
 #
-#  オブジェクトファイル名の定義
+#  Defining the object file name
 #
 OBJNAME = hrp
 ifdef OBJEXT
@@ -134,23 +134,23 @@ else
 endif
 
 #
-#  中間オブジェクトファイルと依存関係ファイルを置くディレクトリの定義
+#  Define the directories where intermediate object files and dependency files are placed
 #
 OBJDIR = @(OBJDIR)
 DEPDIR = @(OBJDIR)
 
 #
-#  ターゲット依存部のディレクトリの定義
+#  Defining a directory for target dependencies
 #
 TARGETDIR = $(SRCDIR)/target/$(TARGET)
 
 #
-#  ターゲット依存の定義のインクルード
+#  Including target-dependent definitions
 #
 include $(TARGETDIR)/Makefile.target
 
 #
-#  TECS生成ファイルのディレクトリの定義
+#  Define the directory for TECS-generated files
 #
 TECSGENDIR = ./gen
 ifndef OMIT_TECS
@@ -159,7 +159,7 @@ ifndef OMIT_TECS
 endif
 
 #
-#  TECSが生成する定義のインクルード
+#  Including TECS-generated definitions
 #
 ifndef OMIT_TECS
 	GEN_DIR = $(TECSGENDIR)
@@ -167,7 +167,7 @@ ifndef OMIT_TECS
 endif
 
 #
-#  共通コンパイルオプションの定義
+#  Common compilation option definitions
 #
 COPTS := -g @(COPTS) $(COPTS)
 ifndef OMIT_WARNING_ALL
@@ -189,7 +189,7 @@ LIBS := $(LIBS) $(CXXLIBS)
 CFLAGS = $(COPTS) $(CDEFS) $(INCLUDES)
 
 #
-#  アプリケーションプログラムに関する定義
+#  Application Program Definitions
 #
 APPLNAME = @(APPLNAME)
 APPLDIRS = @(APPLDIRS)
@@ -223,7 +223,7 @@ CONFIG_EV3RT_APPLICATION = 1
 include @(APPLDIRS)/Makefile.inc
 
 #
-#  システムサービスに関する定義
+#  System Service Definitions
 #
 SYSSVC_DIRS := $(TECSGENDIR) $(SRCDIR)/tecs_kernel \
 				$(SYSSVC_DIRS) $(SRCDIR)/syssvc \
@@ -236,7 +236,7 @@ INCLUDES := $(INCLUDES) -I$(TECSGENDIR) -I$(SRCDIR)/tecs_kernel \
 				-I$(TECSDIR)/tecs -I$(TECSDIR)/tecs/rpc
 
 #
-#  トレースログ記録のサンプルコードに関する定義
+#  Trace logging sample code definitions
 #
 ifdef ENABLE_TRACE
 	COPTS := $(COPTS) -DTOPPERS_ENABLE_TRACE
@@ -244,7 +244,7 @@ ifdef ENABLE_TRACE
 endif
 
 #
-#  ターゲットファイル
+#  target file
 #
 .PHONY: all
 ifndef OMIT_TECS
@@ -258,10 +258,10 @@ all: kernel_cfg.h $(OFFSET_H) check
 #all: kernel_cfg.h $(OFFSET_H) check $(OBJNAME).srec
 endif
 
-##### 以下は編集しないこと #####
+##### Do not edit the following: #####
 
 #
-#  コンフィギュレータに関する定義
+#  Configurator Definitions
 #
 CFG_KERNEL := --kernel hrp
 CFG_TABS := --api-table $(SRCDIR)/kernel/kernel_api.def \
@@ -279,16 +279,16 @@ CFG3_COBJS := kernel_cfg.o kernel_mem3.o $(CFG3_COBJS)
 CFG3_ASMOBJS := $(CFG3_ASMOBJS)
 
 #
-#  カーネルに関する定義
+#  Kernel definitions
 #
-#  KERNEL_ASMOBJS: カーネルライブラリに含める，ソースがアセンブリ言語の
-#				   オブジェクトファイル．
-#  KERNEL_COBJS: カーネルのライブラリに含める，ソースがC言語で，ソース
-#				 ファイルと1対1に対応するオブジェクトファイル．
-#  KERNEL_LCSRCS: カーネルのライブラリに含めるC言語のソースファイルで，
-#				  1つのソースファイルから複数のオブジェクトファイルを生
-#				  成するもの．
-#  KERNEL_LCOBJS: 上のソースファイルから生成されるオブジェクトファイル．
+#  KERNEL_ASMOBJS: An object file whose source is assembly language, 
+#                  to be included in the kernel library.
+#  KERNEL_COBJS: An object file that is included in the kernel library and 
+#                whose source is in C language and has one-to-one correspondence 
+#                with the source file.
+#  KERNEL_LCSRCS: A C language source file to be included in the kernel library,
+#                 which generates multiple object files from a single source file.
+#  KERNEL_LCOBJS: The object file generated from the above source file.
 #
 KERNEL_DIRS := $(KERNEL_DIRS) $(SRCDIR)/kernel
 KERNEL_ASMOBJS := $(KERNEL_ASMOBJS)
@@ -296,7 +296,7 @@ KERNEL_COBJS := $(KERNEL_COBJS) svc_table.o
 KERNEL_CFLAGS := $(KERNEL_CFLAGS) -I$(SRCDIR)/kernel
 
 #
-#  カーネルのファイル構成の定義
+#  Defining the kernel file structure
 #
 include $(SRCDIR)/kernel/Makefile.kernel
 ifdef KERNEL_FUNCOBJS
@@ -340,7 +340,7 @@ INCLUDES += $(foreach dir,$(shell find $(TARGETDIR) -type d -name include),-I$(d
 KERNEL_DIRS += $(foreach dir,$(shell find $(TARGETDIR) -type d -name src),$(dir))
 
 #
-#  ソースファイルのあるディレクトリに関する定義
+#  Definition of the directory containing the source files
 #
 vpath %.c $(KERNEL_DIRS) $(SYSSVC_DIRS) $(APPL_DIRS)
 vpath %.S $(KERNEL_DIRS) $(SYSSVC_DIRS) $(APPL_DIRS)
@@ -348,7 +348,7 @@ vpath %.cfg $(APPL_DIRS)
 vpath %.cdl $(APPL_DIRS)
 
 #
-#  中間オブジェクトファイルを置くディレクトリの処理
+#  Processing the directory where intermediate object files are placed
 #
 LDFLAGS := -L $(OBJDIR) $(LDFLAGS) 
 APPL_ASMOBJS   := $(addprefix $(OBJDIR)/, $(APPL_ASMOBJS))
@@ -367,7 +367,7 @@ CFG3_ASMOBJS   := $(addprefix $(OBJDIR)/, $(CFG3_ASMOBJS))
 CFG3_COBJS     := $(addprefix $(OBJDIR)/, $(CFG3_COBJS))
 
 #
-#  コンパイルのための変数の定義
+#  Defining variables for compilation
 #
 APPL_OBJS = $(APPL_ASMOBJS) $(APPL_COBJS) $(APPL_CXXOBJS)
 SYSSVC_OBJS = $(SYSSVC_ASMOBJS) $(SYSSVC_COBJS)
@@ -403,12 +403,12 @@ CFG2_OUT_LDFLAGS := $(CFG2_OUT_LDFLAGS) -Wl,-T,$(CFG2_OUT_LDSCRIPT)
 CFG3_OUT_LDFLAGS := $(CFG3_OUT_LDFLAGS) -Wl,-T,$(CFG3_OUT_LDSCRIPT)
 
 #
-#  tecsgenからCプリプロセッサを呼び出す際のオプションの定義
+#  Define options when invoking the C preprocessor from tecsgen
 #
 TECS_CPP = $(CC) $(CDEFS) $(INCLUDES) $(SYSSVC_CFLAGS) -D TECSGEN -E
 
 #
-#  tecsgenの呼出し
+#  Invoking tecsgen
 #
 .PHONY: tecs
 tecs $(TECSGEN_SRCS) $(TECS_HEADERS): $(TECSGEN_TIMESTAMP) ;
@@ -416,14 +416,14 @@ $(TECSGEN_TIMESTAMP): $(APPL_CDL) $(TECS_IMPORTS)
 	$(TECSGEN) $< -R $(INCLUDES) --cpp "$(TECS_CPP)" -g $(TECSGENDIR)
 
 #
-#  omit_svc.hの生成規則（ファイルがなければ空のファイルを生成する）
+#  omit_svc.h generation rule (creates an empty file if the file does not exist)
 #
 omit_svc.h:
 	$(call print_cmd, "TOUCH", $@)
 	@touch omit_svc.h
 
 #
-#  カーネルのコンフィギュレーションファイルの生成
+#  Generate the kernel configuration file
 #
 cfg1_out.c cfg1_out.db: cfg1_out.timestamp ;
 cfg1_out.timestamp: $(APPL_CFG) $(TECSGEN_TIMESTAMP)
@@ -451,7 +451,7 @@ kernel_cfg.timestamp: cfg1_out.db cfg1_out.syms cfg1_out.srec
 	@$(CFG) --pass 2 $(CFG_KERNEL) $(INCLUDES) -T $(TARGET_KERNEL_TRB)
 
 #
-#	パス3を使用する場合
+#	When to use pass 3
 #
 ifdef USE_CFG_PASS3
 $(CFG3_OUT_SRCS) $(CFG3_OUT_LDSCRIPT) cfg3_out.db: kernel_opt.timestamp ;
@@ -474,7 +474,7 @@ kernel_mem.timestamp: cfg3_out.db $(ALL3_OBJS) $(LIBS_DEP) $(CFG3_OUT_LDSCRIPT)
 endif
 
 #
-#	パス3を使用しない場合
+#	Without pass 3
 #
 ifndef USE_CFG_PASS3
 kernel_mem.c $(LDSCRIPT): kernel_mem.timestamp ;
@@ -489,7 +489,7 @@ kernel_mem.timestamp: cfg2_out.db $(ALL2_OBJS) $(LIBS_DEP) $(CFG2_OUT_LDSCRIPT)
 endif
 
 #
-#  オフセットファイル（offset.h）の生成規則
+#  Offset file (offset.h) generation rules
 #
 $(OFFSET_H): offset.timestamp ;
 offset.timestamp: cfg1_out.db cfg1_out.syms cfg1_out.srec
@@ -498,7 +498,7 @@ offset.timestamp: cfg1_out.db cfg1_out.syms cfg1_out.srec
 				--rom-symbol cfg1_out.syms --rom-image cfg1_out.srec
 
 #
-#  カーネルライブラリファイルの生成
+#  Generating the kernel library file
 #
 libkernel.a: $(OFFSET_H) $(KERNEL_LIB_OBJS)
 	$(call print_cmd, "RM", $@)
@@ -509,45 +509,45 @@ libkernel.a: $(OFFSET_H) $(KERNEL_LIB_OBJS)
 	@$(RANLIB) libkernel.a
 
 #
-#  並列makeのための依存関係の定義
+#  Defining Dependencies for Parallel Make
 #
 $(APPL_OBJS) $(SYSSVC_OBJS): | kernel_cfg.timestamp
 $(APPL_ASMOBJS) $(SYSSVC_ASMOBJS) $(KERNEL_ASMOBJS) $(CFG_ASMOBJS): \
 														| offset.timestamp
 
 #
-#  特別な依存関係の定義
+#  Special Dependency Definitions
 #
 $(OBJDIR)/svc_table.o: omit_svc.h
 $(OBJDIR)/@(BANNEROBJ): $(filter-out $(OBJDIR)/@(BANNEROBJ),$(ALL_OBJS2)) \
 																$(LIBS_DEP)
 
 #
-#  全体のリンク
+#  Overall link
 #
 $(OBJFILE): $(ALL_OBJS) $(LIBS_DEP) $(LDSCRIPT)
 	$(LINK) $(CFLAGS) $(LDFLAGS) $(OBJ_LDFLAGS) -o $(OBJFILE)
 
 #
-#  シンボルファイルの生成
+#  Generating a symbol file
 #
 $(OBJNAME).syms: $(OBJFILE)
 	$(NM) -n $(OBJFILE) > $(OBJNAME).syms
 
 #
-#  バイナリファイルの生成
+#  Generating a binary file
 #
 $(OBJNAME).bin: $(OBJFILE)
 	$(OBJCOPY) -O binary -S $(OBJFILE) $(OBJNAME).bin
 
 #
-#  Sレコードファイルの生成
+#  Generating an S record file
 #
 $(OBJNAME).srec: $(OBJFILE)
 	$(OBJCOPY) -O srec -S $(OBJFILE) $(OBJNAME).srec
 
 #
-#  エラーチェック処理
+#  Error Checking
 #
 .PHONY: check
 check: check.timestamp ;
@@ -561,7 +561,7 @@ endif
 	@echo "configuration check passed"
 
 #
-#  コンパイル結果の消去
+#  Clearing the compilation results
 #
 .PHONY: clean
 clean:
@@ -590,10 +590,10 @@ realclean: clean
 	rm -f $(REALCLEAN_FILES)
 
 #
-#  コンフィギュレータが生成したファイルのコンパイルルールの定義
+#  Define compilation rules for files generated by the configurator
 #
-#  コンフィギュレータが生成したファイルは，共通のコンパイルオプション
-#  のみを付けてコンパイルする．
+#  The files generated by the configurator are compiled with only 
+#  common compilation options.
 #
 ALL_CFG_COBJS = $(sort $(CFG_COBJS) $(CFG2_COBJS) $(CFG3_COBJS) \
 													$(OBJDIR)/cfg1_out.o)
@@ -611,16 +611,16 @@ $(ALL_CFG_ASMOBJS): $(OBJDIR)/%.o: %.S
 	@$(CC) -c -o $@ -MD -MP -MF $(DEPDIR)/$*.d $(CFLAGS) $(CFG_CFLAGS) $<
 
 #
-#  依存関係ファイルのインクルード
+#  Including dependency files
 #
 -include $(DEPDIR)/*.d
 
 #
-#  開発ツールのコマンド名の定義
+#  Defining command names for development tools
 #
 ifeq ($(TOOL),gcc)
 	#
-	#  GNU開発環境用
+	#  For GNU development environment
 	#
 	ifdef GCC_TARGET
 		GCC_TARGET_PREFIX = $(GCC_TARGET)-
@@ -657,7 +657,7 @@ else
 endif
 
 #
-#  コンパイルルールの定義
+#  Defining compilation rules
 #
 $(KERNEL_COBJS): $(OBJDIR)/%.o: %.c
 	$(call print_cmd, "CC[K]", $<)
@@ -705,7 +705,7 @@ $(APPL_ASMOBJS): $(OBJDIR)/%.o: %.S
 	@$(CC) -c -o $@ -MD -MP -MF $(DEPDIR)/$*.d $(CFLAGS) $(APPL_CFLAGS) $<
 
 #
-#  デフォルトコンパイルルールを上書き
+#  Override the default compilation rules
 #
 $(OBJDIR)/%.o: %.c
 	@echo "*** Default compile rules should not be used."

@@ -39,20 +39,20 @@
  */
 
 /*
- *  ターゲット依存の定義
+ *  Target Dependency Definitions
  */
 #include "target_test.h"
 
 /*
- *  ターゲットに依存する可能性のある定数の定義
+ *  Defining constants that may be target dependent
  */
 
 #ifndef STACK_SIZE
-#define	STACK_SIZE		4096		/* タスクのスタックサイズ */
+#define	STACK_SIZE		4096		/* Task stack size */
 #endif /* STACK_SIZE */
 
 /*
- *  関数のプロトタイプ宣言
+ *  Function prototype declaration
  */
 #ifndef TOPPERS_MACRO_ONLY
 

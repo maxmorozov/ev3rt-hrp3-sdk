@@ -48,17 +48,17 @@ define print_cmd
 endef
 
 #
-#  ターゲットの指定（Makefile.targetで上書きされるのを防ぐため）
+#  Specifying a target (to prevent it from being overridden by Makefile.target)
 #
 all:
 
 #
-#  ターゲット略称の定義
+#  Target abbreviation definition
 #
 TARGET = @(TARGET)
 
 #
-#  プログラミング言語の定義
+#  Definition of a programming language
 #
 SRCLANG = @(SRCLANG)
 ifeq ($(SRCLANG),c)
@@ -71,44 +71,44 @@ ifeq ($(SRCLANG),c++)
 endif
 
 #
-#  ソースファイルのディレクトリの定義
+#  Define the directory for the source files
 #
 SRCDIR = @(SRCDIR)
 
 #
-#  オブジェクトファイル名の拡張子の設定
+#  Set object filename extension
 #
 OBJEXT = @(OBJEXT)
 
 #
-#  実行環境の定義（ターゲット依存に上書きされる場合がある）
+#  Execution environment definition (may be overridden by target dependencies)
 #
 DBGENV := @(DBGENV)
 
 #
-#  カーネルライブラリ（libkernel.a）のディレクトリ名
-#  （カーネルライブラリもmake対象にする時は，空に定義する）
+#  Directory name of the kernel library (libkernel.a)
+#  (If you also want to make the kernel library, define it as empty.)
 #
 KERNEL_LIB = @(KERNEL_LIB)
 
 #
-#  カーネルを関数単位でコンパイルするかどうかの定義
+#  Defines whether to compile the kernel function by function
 #
 KERNEL_FUNCOBJS = @(KERNEL_FUNCOBJS)
 
 #
-#  トレースログを取得するかどうかの定義
+#  Define whether to acquire trace logs
 #
 ENABLE_TRACE = @(ENABLE_TRACE)
 
 #
-#  ユーティリティプログラムの名称
+#  Utility program name
 #
 PERL = @(PERL)
 CFG = @(CFG)
 
 #
-#  オブジェクトファイル名の定義
+#  Defining the object file name
 #
 OBJNAME = hrp2
 ifdef OBJEXT
@@ -124,18 +124,18 @@ else
 endif
 
 #
-#  ターゲット依存部のディレクトリの定義
+#  Defining a directory for target dependencies
 #
 TARGETDIR = $(SRCDIR)/target/$(TARGET)
 
 #
-#  ターゲット依存の定義のインクルード
+#  Including target-dependent definitions
 #
 BUILD_LOADER := 1
 include $(TARGETDIR)/Makefile.ev3
 
 #
-#  コンフィギュレータ関係の変数の定義
+#  Defining configurator-related variables
 #
 CFG_TABS := --api-table $(SRCDIR)/kernel/kernel_api.csv \
 			--cfg1-def-table $(SRCDIR)/kernel/kernel_def.csv $(CFG_TABS)
@@ -155,7 +155,7 @@ CFG3_ASMOBJS := $(CFG3_ASMOBJS)
 CFG3_OBJS := $(CFG3_ASMOBJS) $(CFG3_COBJS)
 
 #
-#  共通コンパイルオプションの定義
+#  Common compilation option definitions
 #
 COPTS := $(COPTS) -g @(COPTS)
 ifndef OMIT_WARNING_ALL
@@ -174,7 +174,7 @@ LIBS := $(LIBS) $(CXXLIBS)
 CFLAGS = $(COPTS) $(CDEFS) $(INCLUDES)
 
 #
-#  アプリケーションプログラムに関する定義
+#  Application Program Definitions
 #
 APPLNAME = @(APPLNAME)
 APPLDIR = @(APPLDIR)
@@ -198,7 +198,7 @@ endif
 include @(APPLDIR)/Makefile.inc
 
 #
-#  システムサービスに関する定義
+#  System Service Definitions
 #
 SYSSVC_DIR := $(SYSSVC_DIR) $(SRCDIR)/syssvc $(SRCDIR)/library
 SYSSVC_ASMOBJS := $(SYSSVC_ASMOBJS)
@@ -209,19 +209,18 @@ SYSSVC_LIBS := $(SYSSVC_LIBS)
 INCLUDES := $(INCLUDES)
 
 #
-#  カーネルに関する定義
+#  Kernel definitions
 #
-#  KERNEL_ASMOBJS: カーネルライブラリに含める，ソースがアセンブリ言語の
-#				   オブジェクトファイル．
-#  KERNEL_COBJS: カーネルのライブラリに含める，ソースがC言語で，ソース
-#				 ファイルと1対1に対応するオブジェクトファイル．
-#  KERNEL_LCSRCS: カーネルのライブラリに含めるC言語のソースファイルで，
-#				  1つのソースファイルから複数のオブジェクトファイルを生
-#				  成するもの．
-#  KERNEL_LCOBJS: 上のソースファイルから生成されるオブジェクトファイル．
-#  KERNEL_AUX_COBJS: ロードモジュールに含めないが，カーネルのソースファ
-#					 イルと同じオプションを適用してコンパイルすべき，ソー
-#					 スがC言語のオブジェクトファイル．
+#  KERNEL_ASMOBJS: An object file whose source is assembly language,
+#				   to be included in the kernel library.
+#  KERNEL_COBJS: An object file that is included in the kernel library and whose source
+#                is in C language and has one-to-one correspondence with the source file.
+#  KERNEL_LCSRCS: A C language source file to be included in the kernel library,
+#                 which generates multiple object files from a single source file.
+#  KERNEL_LCOBJS: The object file generated from the above source file.
+#  KERNEL_AUX_COBJS: An object file whose source is C and should not be included in
+#                    the load module but should be compiled with the same options
+#                    as the kernel source file.
 #
 KERNEL_DIR := $(KERNEL_DIR) $(SRCDIR)/kernel
 KERNEL_ASMOBJS := $(KERNEL_ASMOBJS)
@@ -237,23 +236,23 @@ endif
 endif
 
 #
-#  ターゲットファイル（複数を同時に選択してはならない）
+#  Target file (multiple selections are not allowed)
 #
 all: $(OBJFILE)
 #all: $(OBJNAME).bin
 #all: $(OBJNAME).srec
 
-##### 以下は編集しないこと #####
+##### Do not edit the following: #####
 
 #
-#  環境に依存するコンパイルオプションの定義
+#  Defining environment-dependent compilation options
 #
 ifdef DBGENV
   CDEFS := $(CDEFS) -D$(DBGENV)
 endif
 
 #
-#  カーネルのファイル構成の定義
+#  Defining the kernel file structure
 #
 include $(SRCDIR)/kernel/Makefile.kernel
 ifdef KERNEL_FUNCOBJS
@@ -266,7 +265,7 @@ else
 endif
 
 #
-#  ソースファイルのあるディレクトリに関する定義
+#  Definition of the directory containing the source files
 #
 INCLUDES += $(foreach dir,$(shell find $(APPLDIR) -type d -name include),-I$(dir))
 APPL_DIR += $(foreach dir,$(shell find $(APPLDIR) -type d -name src),$(dir))
@@ -275,7 +274,7 @@ vpath %.S $(KERNEL_DIR) $(SYSSVC_DIR) $(APPL_DIR)
 vpath %.cfg $(APPL_DIR)
 
 #
-#  コンパイルのための変数の定義
+#  Defining variables for compilation
 #
 KERNEL_LIB_OBJS = $(KERNEL_ASMOBJS) $(KERNEL_COBJS) $(KERNEL_LCOBJS)
 SYSSVC_OBJS = $(SYSSVC_ASMOBJS) $(SYSSVC_COBJS)
@@ -324,7 +323,7 @@ ifdef CFG3_OUT_LDSCRIPT
 endif
 
 #
-#  オフセットファイル（offset.h）の生成規則
+#  Offset file (offset.h) generation rules
 #
 ifdef OFFSET_TF
 offset.h: $(APPL_CFG) kernel_cfg.timestamp
@@ -338,13 +337,13 @@ offset.h: makeoffset.s $(SRCDIR)/utils/genoffset
 endif
 
 #
-#  omit_svc.hの生成規則（ファイルがなければ空のファイルを生成する）
+#  omit_svc.h generation rule (creates an empty file if the file does not exist)
 #
 omit_svc.h:
 	touch omit_svc.h
 
 #
-#  カーネルのコンフィギュレーションファイルの生成
+#  Generate the kernel configuration file
 #
 cfg1_out.c: $(APPL_CFG)
 	$(call print_cmd, "CFG[1]", $@)
@@ -366,7 +365,7 @@ kernel_cfg.timestamp: $(APPL_CFG) \
 	touch -r kernel_cfg.c kernel_cfg.timestamp
 
 #
-#	パス3を使用する場合
+#	When to use Pass 3
 #
 ifdef USE_CFG_PASS3
 kernel_mem3.c: $(APPL_CFG) kernel_cfg.timestamp $(ALL2_OBJS) $(LIBS_DEP)
@@ -400,7 +399,7 @@ kernel_mem.c: $(APPL_CFG) kernel_cfg.timestamp $(ALL3_OBJS) $(LIBS_DEP)
 endif
 
 #
-#	パス3を使用しない場合
+#	Without pass 3
 #
 ifndef USE_CFG_PASS3
 kernel_mem.c: $(APPL_CFG) kernel_cfg.timestamp $(ALL2_OBJS) $(LIBS_DEP)
@@ -420,7 +419,7 @@ kernel_mem.c: $(APPL_CFG) kernel_cfg.timestamp $(ALL2_OBJS) $(LIBS_DEP)
 endif
 
 #
-#  カーネルライブラリファイルの生成
+#  Generating the kernel library file
 #
 libkernel.a: $(OFFSET_H) $(KERNEL_LIB_OBJS)
 	rm -f libkernel.a
@@ -428,14 +427,14 @@ libkernel.a: $(OFFSET_H) $(KERNEL_LIB_OBJS)
 	$(RANLIB) libkernel.a
 
 #
-#  特別な依存関係の定義
+#  Special Dependency Definitions
 #
 svc_table.o: omit_svc.h
 svc_table.d: omit_svc.h
 banner.o: kernel_cfg.timestamp $(filter-out banner.o,$(ALL2_OBJS)) $(LIBS_DEP)
 
 #
-#  全体のリンク
+#  Overall link
 #
 $(OBJFILE): $(APPL_CFG) kernel_cfg.timestamp $(ALL_OBJS) $(LIBS_DEP)
 	$(LINK) $(CFLAGS) $(LDFLAGS) -o $(OBJFILE) $(START_OBJS) \
@@ -448,19 +447,19 @@ else
 endif
 
 #
-#  バイナリファイルの生成
+#  Generating a binary file
 #
 $(OBJNAME).bin: $(OBJFILE)
 	$(OBJCOPY) -O binary -S $(OBJFILE) $(OBJNAME).bin
 
 #
-#  Sレコードファイルの生成
+#  Generating an S record file
 #
 $(OBJNAME).srec: $(OBJFILE)
 	$(OBJCOPY) -O srec -S $(OBJFILE) $(OBJNAME).srec
 
 #
-#  コンパイル結果の消去
+#  Clearing the compilation results
 #
 .PHONY: clean
 clean:
@@ -494,12 +493,10 @@ realclean: cleandep clean
 	rm -f $(REALCLEAN_FILES)
 
 #
-#  コンフィギュレータが生成したファイルのコンパイルルールと依存関係作成
-#  ルールの定義
+#  Define compilation rules and dependency creation rules for files generated by the configurator
 #
-#  コンフィギュレータが生成したファイルは，アプリケーションプログラム用，
-#  システムサービス用，カーネル用のすべてのオプションを付けてコンパイル
-#  する．
+#  The files generated by the configurator are compiled with all options for application programs,
+#  system services, and the kernel.
 #
 ALL_CFG_COBJS = $(sort $(CFG_COBJS) $(CFG2_COBJS) $(CFG3_COBJS) cfg1_out.o)
 ALL_CFG_ASMOBJS = $(sort $(CFG_ASMOBJS) $(CFG2_ASMOBJS) $(CFG3_ASMOBJS))
@@ -524,7 +521,7 @@ $(ALL_CFG_ASMOBJS:.o=.d): %.d: %.S
 		-O "$(CFLAGS) $(CFG_CFLAGS)" $< >> Makefile.depend
 
 #
-#  特殊な依存関係作成ルールの定義
+#  Defining special dependency creation rules
 #
 cfg1_out.depend: $(APPL_CFG)
 	@$(CFG) -M cfg1_out.c $(INCLUDES) $< >> Makefile.depend
@@ -534,7 +531,7 @@ makeoffset.d: makeoffset.c
 		-T "makeoffset.s" -O "$(CFLAGS) $(KERNEL_CFLAGS)" $< >> Makefile.depend
 
 #
-#  依存関係ファイルの生成
+#  Generating the dependency file
 #
 .PHONY: gendepend
 gendepend:
@@ -553,16 +550,16 @@ depend: cleandep $(OFFSET_H) kernel_cfg.timestamp gendepend \
 endif
 
 #
-#  依存関係ファイルをインクルード
+#  Include dependency files
 #
 -include Makefile.depend
 
 #
-#  開発ツールのコマンド名の定義
+#  Defining command names for development tools
 #
 ifeq ($(TOOL),gcc)
   #
-  #  GNU開発環境用
+  #  For GNU development environment
   #
   ifdef GCC_TARGET
     GCC_TARGET_PREFIX = $(GCC_TARGET)-
@@ -587,7 +584,7 @@ else
 endif
 
 #
-#  コンパイルルールの定義
+#  Defining compilation rules
 #
 KERNEL_ALL_COBJS = $(KERNEL_COBJS) $(KERNEL_AUX_COBJS)
 
@@ -633,7 +630,7 @@ $(APPL_ASMOBJS): %.o: %.S
 	$(CC) -c $(CFLAGS) $(APPL_CFLAGS) $<
 
 #
-#  依存関係作成ルールの定義
+#  Defining dependency creation rules
 #
 $(KERNEL_COBJS:.o=.d): %.d: %.c
 	@$(PERL) $(SRCDIR)/utils/makedep -C $(CC) $(MAKEDEP_OPTS) \
@@ -668,7 +665,7 @@ $(APPL_ASMOBJS:.o=.d): %.d: %.S
 		-O "$(CFLAGS) $(APPL_CFLAGS)" $< >> Makefile.depend
 
 #
-#  デフォルトコンパイルルールを上書き
+#  Override default compilation rules
 #
 %.o: %.c
 	@echo "*** Default compile rules should not be used."
