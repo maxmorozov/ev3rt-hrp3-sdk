@@ -1,6 +1,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include "api_common.h"
 #include "syssvc/serial.h"
 #include "ev3.h"
@@ -144,6 +145,30 @@ void _exit(int status) {
     assert(false);
     ext_ker();
     while(1);
+}
+
+int
+_gettimeofday (struct timeval * tp, void * tzvp)
+{
+  struct timezone *tzp = tzvp;
+  SYSTIM time;
+  if (tp)
+    {
+    /* Ask the host for the seconds since the Unix epoch.  */
+      get_tim(&time);
+
+      tp->tv_sec = time / 1000000;
+      tp->tv_usec = time % 1000000;
+    }
+
+  /* Return fixed data for the timezone.  */
+  if (tzp)
+    {
+      tzp->tz_minuteswest = 0;
+      tzp->tz_dsttime = 0;
+    }
+
+  return 0;
 }
 
 int _open_r(struct _reent *ptr, const char *file, int flags, int mode) {
