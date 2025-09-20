@@ -97,13 +97,16 @@ public:
 stats data;
 
 void balance_task(intptr_t unused) {
-    if (data.size() >= ITERATIONS) {
-        SVC_PERROR(stp_cyc(CYC1));
+    while(data.size() < ITERATIONS) {
+    	slp_tsk();
 
-    	data.report();
-    } else {
         data.sample();
     }
+    data.report();
+
+    SVC_PERROR(stp_cyc(CYC1));
+
+	ext_tsk();
 }
 
 
@@ -118,6 +121,8 @@ void main_task(intptr_t unused) {
     // Open Bluetooth file
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
     assert(bt != NULL);
+
+	act_tsk(BALANCE_TASK);
 
     data.start();
 
