@@ -9,6 +9,9 @@
 #include "kernel/domain.h"
 #include "tlsf.h"
 
+// From target\ev3_gcc\pil\include\driver_interface_filesys.h
+extern ER_UINT extsvc_newlib_write_r(void* ptr, int fd, const void* buf, size_t cnt, void* par5, ID cdmid);
+
 long _read_r(void *reent, int fd, void *buf, size_t cnt) {
     syslog(LOG_NOTICE, "%s called.", __FUNCTION__);
 	return 0;
