@@ -8,6 +8,7 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include <numeric>
 
 #define DEBUG
 
@@ -16,11 +17,6 @@
 #else
 #define _debug(x)
 #endif
-
-/**
- * Constants for the self-balance control algorithm.
- */
-const uint32_t WAIT_TIME_MS = 4;
 
 static const int ITERATIONS = 100000;
 
@@ -46,6 +42,9 @@ class stats {
         return value0 + value1;
     }
 
+    static double sqr(double v) {
+        return v*v;
+    }
 
 public:
     void start() {
@@ -68,9 +67,17 @@ public:
     std::string report() {
         std::sort(buffer.begin(), buffer.end());
 
+        auto total = std::accumulate(buffer.begin(), buffer.end(), std::chrono::nanoseconds{0}, [](auto acc, auto v){return acc + v;});
+        double mean = static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(total).count())/buffer.size();
+
+        double stddev = std::sqrt(std::accumulate(buffer.begin(), buffer.end(), 0.0, 
+                [=](auto acc, auto v){return acc + sqr(std::chrono::duration_cast<std::chrono::microseconds>(v).count() - mean);})/(buffer.size() - 1));
+
         std::ostringstream oss;
 
-        oss << "min/50%/95%/99%/99.9%/100% = "
+        oss << "avg/stddev = "
+            << mean << "us/" << stddev << "us\n"
+            << "min/50%/95%/99%/99.9%/100% = "
             << std::chrono::duration_cast<std::chrono::microseconds>(buffer.front()).count() << "/"
             << percentile(buffer, 50) << "/"
             << percentile(buffer, 95) << "/"
@@ -88,29 +95,17 @@ stats data;
 
 static FILE *bt = NULL;
 
-// Exceptions occurred when I used this approach
-inline void wait_util(SYSTIM next_time) {
-    SYSTIM time;
-    ER ercd = get_tim(&time);
-    assert(ercd == E_OK);
-
-    int diff = next_time - time;
-    if (diff > 0 && diff < static_cast<int32_t>(WAIT_TIME_MS + 1)*1000) {
-        dly_tsk(diff);
-    } else {
-    	fprintf(bt, "time=%" PRIu64  ", next=%" PRIu64  "\n", time, next_time);
-    }
-}
-
-
 void balance_task(intptr_t unused) {
-    if (data.size() >= ITERATIONS) {
-        SVC_PERROR(stp_cyc(CYC1));
+    while(data.size() < ITERATIONS) {
+    	slp_tsk();
 
-    	fprintf(bt, "%s\n", data.report().c_str());
-    } else {
         data.sample();
     }
+   	fprintf(bt, "%s\n", data.report().c_str());
+
+    SVC_PERROR(stp_cyc(CYC1));
+
+	ext_tsk();
 }
 
 
@@ -125,6 +120,8 @@ void main_task(intptr_t unused) {
     // Open Bluetooth file
     bt = ev3_serial_open_file(EV3_SERIAL_BT);
     assert(bt != NULL);
+
+	act_tsk(BALANCE_TASK);
 
     data.start();
 
