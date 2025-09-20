@@ -38,6 +38,10 @@
  *  の責任を負わない．
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  *  Target Dependency Definitions
  */
@@ -62,3 +66,7 @@ extern void balance_task(intptr_t exinf);
 extern void idle_task(intptr_t exinf);
 
 #endif /* TOPPERS_MACRO_ONLY */
+
+#ifdef __cplusplus
+}
+#endif
